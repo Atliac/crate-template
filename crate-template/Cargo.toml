@@ -1,5 +1,5 @@
 [package]
-name = "cli-template"
+name = "atliac-crate-template"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
