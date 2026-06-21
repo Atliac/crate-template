@@ -1,7 +1,8 @@
 name: PR Guidance Comment
 
 on:
-  pull_request_target:
+  # pull_request_target:
+  pull_request:
     types: [opened, ready_for_review]
 
 # Required permissions for reading and writing comments
@@ -111,7 +112,6 @@ jobs:
               '',
               '</details>',
               '',
-              ,
               '',
               '### 🔍 **For Community Reviewers (No Write Access Needed!)**',
               '',
@@ -147,7 +147,6 @@ jobs:
               '',
               '</details>',
               '',
-              ,
               '',
               '### 🛠️ **For the Maintainer**',
               '',
@@ -180,13 +179,12 @@ jobs:
               '',
               '</details>',
               '',
-              ,
               '',
               '### 📚 **Helpful Resources**',
               '',
               `- [Contributing Guidelines](${repoUrl}/CONTRIBUTING.md)`,
               `- [Code of Conduct](${repoUrl}/CODE_OF_CONDUCT.md)`,
-              '- [Project Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}#readme)',
+              `- [Project Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}#readme)`,
               '',
               '---',
               '',
