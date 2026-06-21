@@ -48,6 +48,7 @@ jobs:
             }
 
             const baseBranch = context.payload.pull_request.base.ref;
+            const repoUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${baseBranch}`;
 
             const commentBody = [
               '## Pull Request Guidance & Collaboration 👋',
@@ -65,7 +66,7 @@ jobs:
               '- All CI checks passing (see bottom of PR)',
               '- Added/updated tests for new functionality',
               '- Updated documentation if needed',
-              '- Followed [Contributing Guidelines](CONTRIBUTING.md)',
+              `- Followed [Contributing Guidelines](${repoUrl}/CONTRIBUTING.md)`,
               '- Signed off commits (if DCO required)',
               '',
               '',
@@ -183,8 +184,8 @@ jobs:
               '',
               '### 📚 **Helpful Resources**',
               '',
-              '- [Contributing Guidelines](CONTRIBUTING.md)',
-              '- [Code of Conduct](CODE_OF_CONDUCT.md)',
+              `- [Contributing Guidelines](${repoUrl}/CONTRIBUTING.md)`,
+              `- [Code of Conduct](${repoUrl}/CODE_OF_CONDUCT.md)`,
               '- [Project Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}#readme)',
               '',
               '---',
