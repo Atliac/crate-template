@@ -27,7 +27,7 @@ updates:
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
-      monthly # Options: "daily", "weekly", "monthly"
+      interval: monthly # Options: "daily", "weekly", "monthly"
 
     # --- Optional Settings ---
 
