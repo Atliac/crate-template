@@ -6,7 +6,7 @@ on:
 
 # Required permissions for reading and writing comments
 permissions:
-  pull-requests: write
+  contents: read
   issues: write
 
 jobs:
