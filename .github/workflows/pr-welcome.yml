@@ -88,7 +88,7 @@ jobs:
               '   **No write access is needed** to participate or leave a review, and no deep understanding of the codebase is required. Everyone benefits from multiple reviews!',
               '   ```',
               '',
-              '### For the Maintainer',
+              '### 🛠️ For the Maintainer',
               '',
               'If this PR is reviewed and approved by **two or more independent (standalone) reviewers**, it will significantly speed up the merge progress.',
               '',
