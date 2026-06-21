@@ -1,0 +1,200 @@
+name: PR Guidance Comment
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+# Required permissions for reading and writing comments
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  post-guidance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post guidance comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // 1. Skip if the PR is currently a draft
+            //if (context.payload.pull_request.draft) {
+            //  return;
+            //}
+
+            // 2. Skip if the PR author is the repo owner, a collaborator, or an org member
+            //const association = context.payload.pull_request.author_association;
+            //if (association === 'OWNER' || association === 'COLLABORATOR' || association === 'MEMBER') {
+            //  return;
+            //}
+
+            const prNumber = context.issue.number;
+
+            // 3. Fetch existing comments to prevent duplicate posts
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const signature = 'Automated message maintained by [Atliac]';
+            const alreadyCommented = comments.data.some(comment =>
+              comment.body.includes(signature)
+            );
+
+            if (alreadyCommented) {
+              console.log('Guidance comment already exists. Skipping.');
+              return;
+            }
+
+            const baseBranch = context.payload.pull_request.base.ref;
+
+            const commentBody = [
+              '## Pull Request Guidance & Collaboration 👋',
+              '',
+              '**Welcome!** Thank you for contributing. This automated guide helps everyone—authors, reviewers, and maintainers—move this PR forward efficiently.',
+              '',
+              '### ⏳ **Important: Review Timeline**',
+              '',
+              'The maintainer reviews contributions as time permits. **Please be patient**—quality reviews take time. You can help accelerate the process by following the guidance below and inviting community review.',
+              '',
+              '',
+              '### ✅ **Quick Checklist for Contributors**',
+              '',
+              '- Linked related issues with `closes #123` in PR description',
+              '- All CI checks passing (see bottom of PR)',
+              '- Added/updated tests for new functionality',
+              '- Updated documentation if needed',
+              '- Followed [Contributing Guidelines](CONTRIBUTING.md)',
+              '- Signed off commits (if DCO required)',
+              '',
+              '',
+              '### 🔗 **For the PR Contributor**',
+              '',
+              '<details>',
+              '<summary><strong>Click to expand contributor guidance</strong></summary>',
+              '',
+              '#### 1. Link & Auto-Close Issues',
+              '',
+              'Include closing keywords in your **PR description** (not just commits):',
+              '',
+              '```text',
+              'closes #123',
+              'fixes #456',
+              'resolves #789',
+              '```',
+              '',
+              'This links issues and closes them automatically on merge.',
+              '',
+              '#### 2. Invite Reviewers on Linked Issues',
+              '',
+              'For non-trivial changes, comment on linked issues with:',
+              '',
+              '```text',
+              `Hey everyone! I\'ve opened PR #${prNumber} to resolve this issue.`,
+              '',
+              `I\'d appreciate your help testing and reviewing!`,
+              '',
+              '- **No write access needed** to participate',
+              '- **No deep codebase knowledge required**—just verify the fix works for you',
+              '- **Multiple reviews = faster, safer merges**',
+              '',
+              'Thanks for taking a look! 🙏',
+              '```',
+              '',
+              '#### 3. Keep the PR Updated',
+              '',
+              '- Rebase on `main`/`${baseBranch}` if conflicts arise',
+              '- Address review feedback promptly',
+              '- Push new commits (don\'t force-push)',
+              '',
+              '</details>',
+              '',
+              ,
+              '',
+              '### 🔍 **For Community Reviewers (No Write Access Needed!)**',
+              '',
+              '<details>',
+              '<summary><strong>Click to expand reviewer guidance</strong></summary>',
+              '',
+              'Anyone can review! Your feedback helps the maintainer merge with confidence.',
+              '',
+              '#### 1. Inspect Changes',
+              '',
+              'Review the **"Files changed"** tab, or check out locally:',
+              '',
+              '```bash',
+              `gh pr checkout ${prNumber}`,
+              `git diff origin/${baseBranch}`,
+              '```',
+              '',
+              '> **Focus on:** obvious safety/security issues, logic errors, missing tests. Deep codebase knowledge NOT required.',
+              '',
+              '#### 2. Test Locally',
+              '',
+              'Run the project with this branch to verify:',
+              '',
+              '- The fix works as expected',
+              '- No regressions introduced',
+              '- Tests pass locally',
+              '',
+              '#### 3. Submit Feedback',
+              '',
+              '- **Found issues?** → Submit a review with "Request Changes" or leave comments',
+              '- **Looks good?** → Submit an **Approve** review + briefly note what you tested',
+              '- **Questions?** → Leave a comment asking for clarification',
+              '',
+              '</details>',
+              '',
+              ,
+              '',
+              '### 🛠️ **For the Maintainer**',
+              '',
+              '<details>',
+              '<summary><strong>Click to expand maintainer checklist</strong></summary>',
+              '',
+              'Before merging, verify:',
+              '',
+              '1. **🔒 Security & Safety**',
+              '   - No malicious code, unsafe dependencies, or risky build changes',
+              '   - External dependency changes audited',
+              '',
+              '2. **📄 Licensing & Compliance**',
+              '   - Changes comply with project license',
+              '   - DCO/CLA signed if required',
+              '',
+              '3. **✅ Quality & Tests**',
+              '   - All CI checks pass (green ✅)',
+              '   - Appropriate test coverage for new code',
+              '   - No linting/formatting errors',
+              '',
+              '4. **👥 Community Feedback**',
+              '   - **≥2 independent approvals** → strong signal to merge',
+              '   - Address any outstanding concerns',
+              '',
+              '5. **📝 Final Polish**',
+              '   - PR title follows conventional commits',
+              '   - Changelog updated (if applicable)',
+              '   - No merge conflicts',
+              '',
+              '</details>',
+              '',
+              ,
+              '',
+              '### 📚 **Helpful Resources**',
+              '',
+              '- [Contributing Guidelines](CONTRIBUTING.md)',
+              '- [Code of Conduct](CODE_OF_CONDUCT.md)',
+              '- [Project Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}#readme)',
+              '',
+              '---',
+              '',
+              '_Automated message maintained by [Atliac](https://github.com/Atliac)._'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
