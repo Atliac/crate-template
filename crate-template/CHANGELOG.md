@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3](https://github.com/Atliac/crate-template/compare/v0.0.2...v0.0.3) - 2026-07-09
+
+### Other
+
+- move version from workspace to per-crate ([#13](https://github.com/Atliac/crate-template/pull/13))
+
 ## [0.0.2](https://github.com/Atliac/crate-template/compare/v0.0.1...v0.0.2) - 2026-06-17
 
 ### Other
